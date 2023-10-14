@@ -13,5 +13,8 @@
     "@nuxt/devtools": "latest",
     "@nuxt/ui": "^2.9.0",
     "nuxt": "^3.7.4"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
   }
 }
