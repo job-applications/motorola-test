@@ -4,11 +4,12 @@ import { userStore } from "../stores";
 // .. but we probably wouldn't want this in a production environment
 
 export const findUser = (username: string) => {
-  return userStore[username] ?? null;
+  const id = username.toLowerCase();
+  return userStore[id] ?? null;
 }
 
 export const createUser = (username: string) => {
-  const id = username;
+  const id = username.toLowerCase();
 
   const user = {
     id,
