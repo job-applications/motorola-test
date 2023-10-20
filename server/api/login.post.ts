@@ -1,6 +1,6 @@
-import { findUser } from '../services/user';
-import { getUserAccessToken } from '../services/auth';
-import { usernameValidator } from '../validators/username';
+import { findUser } from "../services/user";
+import { getUserAccessToken } from "../services/auth";
+import { usernameValidator } from "../validators/username";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -9,10 +9,10 @@ export default defineEventHandler(async (event) => {
   if (!username.success) {
     throw createError({
       statusCode: 400,
-      name: 'ValidationError',
+      name: "ValidationError",
       message: username.error.issues[0].message,
       statusMessage: "Bad Request",
-    })
+    });
   }
 
   const user = findUser(username.data);
@@ -20,10 +20,10 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({
       statusCode: 404,
-      name: 'NotFoundError',
-      message: 'User not found',
+      name: "NotFoundError",
+      message: "User not found",
       statusMessage: "Not Found",
-    })
+    });
   }
 
   const token = getUserAccessToken(user);
