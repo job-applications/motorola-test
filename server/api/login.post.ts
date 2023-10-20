@@ -27,5 +27,5 @@ export default defineEventHandler(async (event) => {
   }
 
   const token = getUserAccessToken(user);
-  return { token };
+  return { token, user };
 });

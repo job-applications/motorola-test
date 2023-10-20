@@ -15,5 +15,5 @@ export default defineEventHandler(async (event) => {
   const newUser = createUser(body.username);
   const token = getUserAccessToken(newUser);
 
-  return { token };
+  return { token, user };
 });
