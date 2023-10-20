@@ -7,15 +7,28 @@ export const useAuth = () => {
     authUser.value = user;
   };
 
-  const login = async (username: string) => {
-    const data: any = await $fetch("/login", {
+  const register = async (username: string) => {
+    const data = await $fetch("/api/register", {
       method: "POST",
       body: {
         username,
       },
     });
 
-    setUser(data.user);
+    setUser(data);
+
+    return authUser;
+  };
+
+  const login = async (username: string) => {
+    const data = await $fetch("/api/login", {
+      method: "POST",
+      body: {
+        username,
+      },
+    });
+
+    setUser(data);
 
     return authUser;
   };
@@ -27,5 +40,6 @@ export const useAuth = () => {
   return {
     login,
     logout,
+    register,
   };
 };
