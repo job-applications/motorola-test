@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { z } from "zod";
 import { ref } from "vue";
-import type { FormError, FormSubmitEvent } from "@nuxt/ui/dist/runtime/types";
+import type { FormSubmitEvent } from "@nuxt/ui/dist/runtime/types";
+import { usernameValidator } from "~/validators/username";
 
 const auth = useAuth();
 const user = useAuthUser();
@@ -12,11 +14,9 @@ const state = ref({
 
 const submitting = ref(false);
 
-const validate = (state: any): FormError[] => {
-  const errors = [];
-  if (!state.username) errors.push({ path: "username", message: "Required" });
-  return errors;
-};
+const schema = z.object({
+  username: usernameValidator,
+});
 
 async function submit(event: FormSubmitEvent<any>) {
   // Do something with data
@@ -33,17 +33,25 @@ async function submit(event: FormSubmitEvent<any>) {
   });
   submitting.value = false;
   if (user.value) {
-    await navigateTo("/dashboard");
+    await navigateTo("/");
   }
 }
 </script>
 
 <template>
-  <UForm ref="form" :validate="validate" :state="state" @submit="submit">
+  <UForm
+    ref="form"
+    :schema="schema"
+    :state="state"
+    @submit="submit"
+    class="space-y-4 w-60"
+  >
     <UFormGroup label="Username" name="username">
       <UInput v-model="state.username" />
     </UFormGroup>
 
-    <UButton type="submit" :disabled="submitting"> Login </UButton>
+    <UButton type="submit" :disabled="submitting" icon="i-heroicons-user">
+      Login
+    </UButton>
   </UForm>
 </template>

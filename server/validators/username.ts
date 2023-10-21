@@ -1,10 +1,16 @@
-import { z } from "zod";
+import { usernameValidator } from "~/validators/username";
 
-export const usernameValidator = z
-  .string({
-    required_error: "Username is required",
-    invalid_type_error: "Username must be a string",
-  })
-  .trim()
-  .max(20, { message: "Username must be at least 20 characters long" })
-  .min(3, { message: "Username must be at least 3 characters long" });
+export const enforceUsernameValidator = (username: unknown) => {
+  const parsed = usernameValidator.safeParse(username);
+
+  if (!parsed.success) {
+    throw createError({
+      statusCode: 400,
+      name: "ValidationError",
+      message: parsed.error.issues[0].message,
+      statusMessage: "Bad Request",
+    });
+  }
+
+  return parsed.data;
+};

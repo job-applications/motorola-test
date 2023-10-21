@@ -1,9 +1,11 @@
 import { createUser, findUser } from "../services/user";
 import { getUserAccessToken } from "../services/auth";
+import { enforceUsernameValidator } from "../validators/username";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const user = findUser(body.username);
+  const username = enforceUsernameValidator(body.username);
+  const user = findUser(username);
 
   if (user) {
     throw createError({
@@ -12,7 +14,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const newUser = createUser(body.username);
+  const newUser = createUser(username);
   const token = getUserAccessToken(newUser);
 
   return { token, user };
