@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { FormError, FormSubmitEvent } from "@nuxt/ui/dist/runtime/types";
+import { IMAGE_UPLOAD_MIME_TYPES } from "~/constants";
 
 const form = ref();
 const state = ref({
@@ -9,13 +10,28 @@ const state = ref({
 });
 
 async function submit(event: FormSubmitEvent<any>) {
+  // Check mime type
+  if (!IMAGE_UPLOAD_MIME_TYPES.includes(event.data.file.type)) {
+    form.value.setErrors([
+      {
+        path: "file",
+        message: "Unsupported file type!",
+      },
+    ]);
+    return;
+  }
   // Do something with data
   console.log(event.data.file);
 }
 </script>
 
 <template>
-  <UForm ref="form" :state="state" @submit="submit" class="space-y-4 w-60">
+  <UForm
+    ref="form"
+    :state="state"
+    @submit.prevent="submit"
+    class="space-y-4 w-60"
+  >
     <UFormGroup label="File" name="file">
       <UInput
         type="file"
