@@ -3,8 +3,10 @@
 
 import { enforceNoteValidator } from "../validators/note";
 import { enforceFileValidator } from "../validators/file";
+import ensureAuth from "../utils/ensureAuth";
 
 export default defineEventHandler(async (event) => {
+  ensureAuth(event.context);
   const formData = await readMultipartFormData(event);
   if (!formData) {
     throw createError({

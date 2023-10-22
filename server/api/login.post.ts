@@ -1,6 +1,8 @@
 import { findUser } from "../services/user";
 import { getUserAccessToken } from "../services/auth";
 import { enforceUsernameValidator } from "../validators/username";
+import { env } from "~/env";
+import ms from "ms";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -17,5 +19,14 @@ export default defineEventHandler(async (event) => {
   }
 
   const token = getUserAccessToken(user);
+
+  setCookie(event, "__session", token, {
+    httpOnly: true,
+    path: "/",
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    expires: new Date(Date.now() + ms(env.JWT_TOKEN_EXPIRES_IN)),
+  });
+
   return { token, user };
 });
