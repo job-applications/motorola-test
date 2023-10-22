@@ -8,7 +8,7 @@ import { detectFaces, setupFaceApi } from "../services/face";
 import { addImage } from "../services/image";
 
 export default defineEventHandler(async (event) => {
-  ensureAuth(event.context);
+  const user = ensureAuth(event.context);
   await setupFaceApi();
   const formData = await readMultipartFormData(event);
   if (!formData) {
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   const file = enforceFileValidator(rawFile);
   const note = enforceNoteValidator(rawNote?.data.toString() ?? "");
 
-  const image = addImage(event.context.user, file, note);
+  const image = addImage(user, file, note);
 
   // const detections = await detectFaces(file.data);
   // console.log(`Number of faces detected: ${detections.length}`);

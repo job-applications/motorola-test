@@ -4,6 +4,9 @@ import type { FormSubmitEvent } from "@nuxt/ui/dist/runtime/types";
 import { IMAGE_UPLOAD_MIME_TYPES } from "~/constants";
 import { z } from "zod";
 import { noteValidator } from "~/validators/note";
+import imageStore from "~/stores/imageStore";
+
+const emit = defineEmits(["onComplete"]);
 
 interface InputFileEvent extends Event {
   target: HTMLInputElement;
@@ -49,6 +52,9 @@ async function handleUpload() {
   formData.append("file", file);
   formData.append("note", state.value.note);
 
+  uploadState.progress = 0;
+  uploadState.isSuccess = false;
+  uploadState.isError = false;
   uploadState.isUploading = true;
 
   const xhr = new XMLHttpRequest();
@@ -64,6 +70,8 @@ async function handleUpload() {
   xhr.addEventListener("load", () => {
     if (xhr.status === 200) {
       uploadState.isSuccess = true;
+      imageStore.shouldRefresh = true;
+      emit("onComplete");
     } else {
       uploadState.isError = true;
     }
@@ -86,8 +94,12 @@ async function handleUpload() {
 async function submit(event: FormSubmitEvent<any>) {
   const file = getFileInputFile();
   if (!file) {
-    debugger;
-    console.log("No file selected");
+    form.value.setErrors([
+      {
+        path: "file",
+        message: "Please select a file",
+      },
+    ]);
     return;
   }
 
