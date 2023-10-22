@@ -43,7 +43,7 @@ async function submit(event: FormSubmitEvent<any>) {
     ref="form"
     :schema="schema"
     :state="state"
-    @submit="submit"
+    @submit.prevent="submit"
     class="space-y-4 w-60"
   >
     <UFormGroup label="Username" name="username">

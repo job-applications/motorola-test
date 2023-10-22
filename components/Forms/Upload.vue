@@ -105,6 +105,8 @@ async function submit(event: FormSubmitEvent<any>) {
 
   await handleUpload();
 }
+
+const acceptedMimeTypes = IMAGE_UPLOAD_MIME_TYPES.join(", ");
 </script>
 
 <template>
@@ -119,7 +121,7 @@ async function submit(event: FormSubmitEvent<any>) {
       <UInput
         type="file"
         v-model="state.file"
-        accept="image/gif, image/jpeg, image/png"
+        :accept="acceptedMimeTypes"
         @change="handleFileChange"
       />
     </UFormGroup>

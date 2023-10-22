@@ -1,4 +1,4 @@
-import { UserRecord } from "./types";
+import { ImageRecord, UserRecord } from "./types";
 
 export const userStore: Record<string, UserRecord> = {
   user1: {
@@ -11,3 +11,5 @@ export const userStore: Record<string, UserRecord> = {
     isAdministrator: true,
   },
 };
+
+export const imageStore: Record<string, ImageRecord> = {};
