@@ -1,5 +1,4 @@
-# Use the official Node 18 image as a base
-FROM node:18
+FROM node:18-alpine
 
 # Set working directory in the container
 WORKDIR /app
@@ -8,9 +7,18 @@ WORKDIR /app
 # Utilize the cache of npm packages
 COPY package*.json ./
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev libjpeg-turbo8
+#  add libraries; sudo so non-root user added downstream can get sudo
+RUN apk add --update --no-cache \
+    make \
+    g++ \
+    jpeg-dev \
+    cairo-dev \
+    giflib-dev \
+    pango-dev \
+    librsvg-dev \
+    libtool \
+    autoconf \
+    automake
 
 # Install project dependencies
 RUN npm install
