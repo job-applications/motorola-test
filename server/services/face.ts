@@ -17,6 +17,8 @@ async function setupFaceApi(): Promise<void> {
 }
 
 async function detectFaces(buffer: Buffer): Promise<faceapi.FaceDetection[]> {
+  await setupFaceApi();
+
   const img = new Image();
   img.src = buffer;
 

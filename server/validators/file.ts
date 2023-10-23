@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { IMAGE_UPLOAD_MIME_TYPES } from "~/constants";
+import { fileTypeFromBuffer } from "file-type";
 
 const invalidTypeError = IMAGE_UPLOAD_MIME_TYPES.join(", ");
 
@@ -19,7 +20,7 @@ export const fileValidator = z.object({
   }),
 });
 
-export const enforceFileValidator = (file: unknown) => {
+export const enforceFileValidator = async (file: unknown) => {
   const parsed = fileValidator.safeParse(file);
 
   if (!parsed.success) {
@@ -27,6 +28,25 @@ export const enforceFileValidator = (file: unknown) => {
       statusCode: 400,
       name: "ValidationError",
       message: parsed.error.issues[0].message,
+      statusMessage: "Bad Request",
+    });
+  }
+
+  const fileType = await fileTypeFromBuffer(parsed.data.data);
+  if (!fileType) {
+    throw createError({
+      statusCode: 400,
+      name: "ValidationError",
+      message: "Invalid file type. Expected a valid image file.",
+      statusMessage: "Bad Request",
+    });
+  }
+
+  if (fileType.mime !== parsed.data.type) {
+    throw createError({
+      statusCode: 400,
+      name: "ValidationError",
+      message: `Invalid file type. Expected ${parsed.data.type} but got ${fileType}`,
       statusMessage: "Bad Request",
     });
   }
