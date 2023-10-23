@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
     httpOnly: true,
     path: "/",
     sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
     expires: new Date(Date.now() + ms(env.JWT_TOKEN_EXPIRES_IN)),
   });
 
