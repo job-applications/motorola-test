@@ -1,4 +1,14 @@
-FROM node:18-alpine
+# Start from the official Ubuntu image
+FROM ubuntu:jammy
+
+# Set environment variables to non-interactive (this prevents some prompts)
+ENV DEBIAN_FRONTEND=non-interactive
+
+# Install Node.js (v18) and other dependencies
+RUN apt-get update && \
+    apt-get install -y curl build-essential libcairo2-dev libpango1.0-dev libjpeg8-dev libgif-dev librsvg2-dev && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
 
 # Set working directory in the container
 WORKDIR /app
@@ -6,19 +16,6 @@ WORKDIR /app
 # Copy package.json and package-lock.json before other files
 # Utilize the cache of npm packages
 COPY package*.json ./
-
-#  add libraries; sudo so non-root user added downstream can get sudo
-RUN apk add --update --no-cache \
-    make \
-    g++ \
-    jpeg-dev \
-    cairo-dev \
-    giflib-dev \
-    pango-dev \
-    librsvg-dev \
-    libtool \
-    autoconf \
-    automake
 
 # Install project dependencies
 RUN npm install
