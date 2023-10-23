@@ -1,15 +1,15 @@
 <template>
   <div class="relative">
+    <div class="flex">
+      <h2 class="text-2xl">Images</h2>
+      <div class="ml-auto">
+        <UButton label="Upload" @click="isOpen = true" />
+      </div>
+    </div>
     <UContainer
       as="div"
-      class="bg-slate-100 p-4 sm:p-6 lg:p-8 rounded sm:rounded-md lg:rounded-xl my-8"
+      class="bg-slate-100 p-4 sm:p-6 lg:p-8 rounded sm:rounded-md lg:rounded-xl my-4"
     >
-      <div class="flex mb-4">
-        <h2 class="text-2xl">Images</h2>
-        <div class="ml-auto">
-          <UButton label="Upload" @click="isOpen = true" />
-        </div>
-      </div>
       <ImageFeed />
     </UContainer>
 

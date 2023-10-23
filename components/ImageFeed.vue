@@ -79,3 +79,17 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+table th:first-child {
+  width: 3rem;
+}
+
+table th:nth-child(2) {
+  width: 15rem;
+}
+
+table th:last-child {
+  width: 4rem;
+}
+</style>
