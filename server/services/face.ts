@@ -12,7 +12,7 @@ async function setupFaceApi(): Promise<void> {
     return;
   }
 
-  const MODEL_URL = "/home/workbench/motorola/models";
+  const MODEL_URL = "./models";
   await faceapi.nets.ssdMobilenetv1.loadFromDisk(MODEL_URL);
 }
 
