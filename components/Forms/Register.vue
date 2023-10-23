@@ -1,30 +1,61 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { FormError, FormSubmitEvent } from "@nuxt/ui/dist/runtime/types";
+import { usernameValidator } from "~/validators/username";
+import { z } from "zod";
 
+const auth = useAuth();
+const user = useAuthUser();
+
+const form = ref();
 const state = ref({
   username: undefined,
 });
 
-const validate = (state: any): FormError[] => {
-  const errors = [];
-  if (!state.username) errors.push({ path: "username", message: "Required" });
-  return errors;
-};
+const submitting = ref(false);
+
+const schema = z.object({
+  username: usernameValidator,
+});
 
 async function submit(event: FormSubmitEvent<any>) {
   // Do something with data
-  console.log(event.data);
+  submitting.value = true;
+  await auth.register(event.data.username).catch((error) => {
+    if (error.data) {
+      form.value.setErrors([
+        {
+          path: "username",
+          message: error.data.message,
+        },
+      ]);
+    }
+  });
+  submitting.value = false;
+  if (user.value) {
+    await navigateTo("/");
+  }
 }
 </script>
 
 <template>
-  <UForm :state="state" @submit="submit" class="space-y-4 w-60">
+  <UForm
+    ref="form"
+    :state="state"
+    :schema="schema"
+    @submit.prevent="submit"
+    class="space-y-4 w-60"
+  >
     <UFormGroup label="Username" name="username">
       <UInput v-model="state.username" />
     </UFormGroup>
 
-    <UButton type="submit" icon="i-heroicons-user-plus" variant="outline">
+    <UButton
+      type="submit"
+      :disabled="submitting"
+      icon="i-heroicons-user-plus"
+      variant="outline"
+    >
       Register
     </UButton>
   </UForm>

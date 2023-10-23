@@ -8,28 +8,45 @@ export const useAuth = () => {
   };
 
   const register = async (username: string) => {
-    const data = await $fetch("/api/register", {
+    const result = await $fetch("/auth/register", {
       method: "POST",
       body: {
         username,
       },
     });
 
-    setUser(data);
+    if (result.statusCode !== 200) {
+      throw new Error(result.message);
+    }
 
+    setUser(result.data);
     return authUser;
   };
 
   const login = async (username: string) => {
-    const data = await $fetch("/api/login", {
+    const result = await $fetch("/auth/login", {
       method: "POST",
       body: {
         username,
       },
     });
 
-    setUser(data);
+    if (result.statusCode !== 200) {
+      throw new Error(result.message);
+    }
 
+    setUser(result.data);
+    return authUser;
+  };
+
+  const me = async () => {
+    const result = await $fetch("/auth/me");
+
+    if (result.statusCode !== 200) {
+      throw new Error(result.message);
+    }
+
+    setUser(result.data);
     return authUser;
   };
 
@@ -38,6 +55,7 @@ export const useAuth = () => {
   };
 
   return {
+    me,
     login,
     logout,
     register,

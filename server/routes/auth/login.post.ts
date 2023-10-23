@@ -1,6 +1,6 @@
-import { findUser } from "../services/user";
-import { getUserAccessToken } from "../services/auth";
-import { enforceUsernameValidator } from "../validators/username";
+import { createUser, findUser } from "../../services/user";
+import { getUserAccessToken } from "../../services/auth";
+import { enforceUsernameValidator } from "../../validators/username";
 import { env } from "~/env";
 import ms from "ms";
 
@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
   const user = findUser(username);
 
   if (!user) {
+    createUser(username);
     throw createError({
       statusCode: 404,
       name: "NotFoundError",
@@ -28,5 +29,9 @@ export default defineEventHandler(async (event) => {
     expires: new Date(Date.now() + ms(env.JWT_TOKEN_EXPIRES_IN)),
   });
 
-  return { token, user };
+  return {
+    statusCode: 200,
+    message: "User logged in successfully",
+    data: user,
+  };
 });
